@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.kosmo.yjj.mapper.UserMapper">
+
+
+	<resultMap id="userMap" type="edu.kosmo.yjj.vo.UserVO">
+	<!-- 칼럼은 디비에 있는 칼럼명이 온다, property는 UserVO에있는 변수명 -->
+	    <result property="member_id" column="member_id"/>
+	    <result property="member_password" column="member_password"/>
+	    <result property="member_name" column="member_name"/>
+	    <result property="member_call" column="member_call"/>
+	    <result property="member_birth" column="member_birth"/>
+	    <result property="member_gender" column="member_gender"/>
+	    <result property="member_address" column="member_address"/>
+	    <!-- private List<AuthVO> authList; 처리 -->
+		<collection property="authList" resultMap="authMap"></collection>
+	</resultMap>
+	
+	<resultMap id="authMap" type="edu.kosmo.yjj.vo.AuthVO">
+		<result property="member_id" column="member_id"/>
+		<result property="authority" column="authority"/>
+	</resultMap>
+	
+	 <!--  resultMap : 1:n 처리 -->
+	<select id="getUser" resultMap="userMap">
+		select * from member , authorities 
+		where member.member_id = authorities.member_id and member.member_id = #{member_id}
+	</select>	
+
+</mapper>

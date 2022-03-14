@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName"
+			value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
+		<property name="jdbcUrl"
+			value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE"></property>
+		<!-- 오라클 db와 동일 -->
+		<property name="username" value="ether"></property>
+		<property name="password" value="8977"></property>
+	</bean>
+
+	<!-- HikariCP configuration -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
+		destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+	
+	<!-- mapperLocations을 특별히 지정하기 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="mapperLocations" value="classpath:/sqlmap/*.xml" /> 
+	</bean>
+	
+
+	<!-- 	Mapper Interface -->
+	<!-- mybatis:scan 해당 패키지 밑에 인터페이스는 전부 Mapper로 인식 -->
+	<mybatis-spring:scan base-package="edu.kosmo.yjj.mapper"/> 
+
+	<!-- mybatis:scan 해당 패키지 밑에 있는 특정 인터페이스만 Mapper로 인식 -->
+	<!--  <mybatis-spring:scan base-package="edu.kosmo.yjj.*"  /> -->
+	
+	<!-- @Component, @Repository, @Service, @Controller, @RestController,-->	
+	<context:component-scan base-package="edu.kosmo.yjj.service" />
+	
+		
+		
+</beans>
